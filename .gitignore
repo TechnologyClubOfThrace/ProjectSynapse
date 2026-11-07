@@ -1,0 +1,48 @@
+# Local .NET and NuGet state
+/.dotnet-home/
+/.packages/
+/.vs/
+**/bin/
+**/obj/
+/TestResults/
+*.user
+*.suo
+
+# Local installation data
+/local-data/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+*.jsonl
+*.log
+
+# Audio and score files are distributed separately
+*.wav
+*.mp3
+*.flac
+*.mscz
+*.musicxml
+
+# Build and temporary output
+/artifacts/
+/.build/
+/tmp/
+/.backup/
+*.zip
+*.7z
+
+# Local production material and third-party portable tools
+/music/
+/compositions/
+/Synapse/
+/Πρόχειρα/
+
+# Machine-specific configuration and secrets
+.env
+.env.*
+!.env.example
+secrets.h
+config.local.*
