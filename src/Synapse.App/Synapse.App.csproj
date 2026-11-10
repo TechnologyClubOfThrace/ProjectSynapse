@@ -14,6 +14,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Assets\tree-botanical-v1.png"
                       LogicalName="Synapse.App.Assets.TreeBotanical.png" />
+    <EmbeddedResource Include="Assets\synapse-logo-gr.png"
+                      LogicalName="Synapse.App.Assets.SynapseLogoGr.png" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.33" />
     <ProjectReference Include="..\Synapse.Audio\Synapse.Audio.csproj" />
     <ProjectReference Include="..\Synapse.Input\Synapse.Input.csproj" />

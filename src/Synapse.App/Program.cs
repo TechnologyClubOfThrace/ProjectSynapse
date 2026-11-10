@@ -82,6 +82,7 @@ internal sealed record AppOptions(
                     calibrationPreviewPath = args[++index];
                     break;
                 case "--data" when index + 1 < args.Length:
+                case "--runtime" when index + 1 < args.Length:
                     runtimeDataDirectory = args[++index];
                     break;
                 case "--technical-preview":

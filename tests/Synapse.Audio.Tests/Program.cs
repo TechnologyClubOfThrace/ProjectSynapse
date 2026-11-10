@@ -32,6 +32,7 @@ Run("Calibration save keeps a timestamped previous profile", TestCalibrationBack
 Run("Calibration library isolates invalid saved profiles", TestCalibrationLibrary, failures);
 Run("Calibrated classifier applies hysteresis", TestTouchClassifier, failures);
 Run("Calibration rejects hysteresis overflow", TestCalibrationOverflow, failures);
+Run("Runtime data option keeps data in the selected directory", TestRuntimeDataOption, failures);
 
 if (args.Length == 1)
 {
@@ -66,6 +67,18 @@ if (args.Length == 1)
             }
         }
     }, failures);
+}
+
+static void TestRuntimeDataOption()
+{
+    var expected = Path.GetFullPath("selected-runtime-data");
+    var dataOptions = AppOptions.Parse(["--data", expected]);
+    var runtimeOptions = AppOptions.Parse(["--runtime", expected]);
+
+    Assert(dataOptions.RuntimeDataDirectory == expected,
+        "The --data option must select the requested runtime directory.");
+    Assert(runtimeOptions.RuntimeDataDirectory == expected,
+        "The --runtime alias must select the requested runtime directory.");
 }
 
 if (failures.Count == 0)

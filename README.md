@@ -7,6 +7,10 @@
 
 Το έργο αναπτύσσεται από τον Σύλλογο Τεχνολογίας Θράκης.
 
+- Μουσική σύνθεση: Giannis Gogos
+- Επιμέλεια κώδικα: Dimitrios Kanatas
+- Οπτικοποίηση δεδομένων: <https://synapse-network-steth.vercel.app/>
+
 ## Περιεχόμενο repository
 
 - `firmware/SynapseV2/`: firmware αφής, τηλεμετρίας και RGBWC φωτισμού.
@@ -39,7 +43,8 @@ local-data/
 ├── compositions/
 │   └── <composition>/
 │       ├── manifest.json
-│       └── <five WAV layers>
+│       ├── <five WAV layers>
+│       └── <reference mix WAV>
 ├── calibrations/
 │   └── active-calibration.json
 └── runtime/
@@ -54,7 +59,8 @@ local-data/
 dotnet build .\src\Synapse.App\Synapse.App.csproj --configuration Release
 
 dotnet run --project .\tests\Synapse.Audio.Tests\Synapse.Audio.Tests.csproj `
-  --configuration Release
+  --configuration Release -- `
+  .\local-data\compositions
 ```
 
 ## Εκκίνηση από τον πηγαίο κώδικα
@@ -64,7 +70,7 @@ dotnet run --project .\src\Synapse.App\Synapse.App.csproj `
   --configuration Release -- `
   --compositions .\local-data\compositions `
   --calibrations .\local-data\calibrations `
-  --data .\local-data\runtime
+  --runtime .\local-data\runtime
 ```
 
 Η εφαρμογή δεν ξεκινά αυτόματα την αναπαραγωγή. Ο χειριστής επιλέγει συσκευή

@@ -41,7 +41,7 @@ dotnet run --project .\src\Synapse.App\Synapse.App.csproj `
   --configuration Release --no-build -- `
   --compositions .\local-data\compositions `
   --calibrations .\local-data\calibrations `
-  --data .\local-data\runtime
+  --runtime .\local-data\runtime
 ```
 
 Η εκκίνηση δεν παίζει ήχο. Η αναπαραγωγή μπορεί να αρχίσει μόνο αφού ο

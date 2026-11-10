@@ -27,8 +27,8 @@
 
 ## C. Audio files - P0
 
-- [ ] Το runtime folder περιέχει ακριβώς πέντε stems.
-- [ ] Το `tree instalation1.wav` δεν βρίσκεται στο runtime folder.
+- [ ] Κάθε σύνθεση δηλώνει ακριβώς πέντε stems και ένα reference mix.
+- [ ] Δεν υπάρχουν undeclared WAV αρχεία στους φακέλους συνθέσεων.
 - [ ] Τα hashes συμφωνούν με το εγκεκριμένο manifest.
 - [ ] Όλα τα stems είναι stereo PCM 16-bit/44.1 kHz.
 - [ ] Όλα τα stems έχουν ίδια διάρκεια και κοινό start point.
@@ -84,7 +84,8 @@
 - [ ] Database, WAL/SHM, logs και temp files βρίσκονται στο `.gitignore`.
 - [ ] Ελέγχθηκαν οι άδειες όλων των dependencies και media assets.
 - [x] Τα WAV και τα αρχεία μουσικής παραμένουν εκτός Git repository.
-- [ ] Το reference mix και τα πρόχειρα αρχεία δεν μπήκαν στο runtime package.
+- [ ] Το reference mix δηλώνεται ως `runtime: false` και δεν αναπαράγεται ως layer.
+- [ ] Πρόχειρα και μη δηλωμένα audio αρχεία δεν μπήκαν στο runtime package.
 - [ ] Το package εγκαθίσταται χωρίς Internet.
 - [ ] Δεν απαιτεί απενεργοποίηση antivirus, firewall ή certificate validation.
 
