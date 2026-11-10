@@ -1,5 +1,9 @@
 # Project Synapse
 
+<p align="center">
+  <img src="src/Synapse.App/Assets/synapse-logo-gr.png" alt="Synapse - Σύλλογος Τεχνολογίας Θράκης" width="520">
+</p>
+
 Το Synapse είναι μια διαδραστική εγκατάσταση συλλογικής αφής, φωτισμού και
 μουσικής. Μια κοινή επιφάνεια αφής συνδέεται με ESP32-S3. Το firmware μετρά τη
 χωρητική μεταβολή και οδηγεί τον φωτισμό του δέντρου, ενώ η εφαρμογή Windows
@@ -7,8 +11,6 @@
 
 Το έργο αναπτύσσεται από τον Σύλλογο Τεχνολογίας Θράκης.
 
-- Μουσική σύνθεση: Giannis Gogos
-- Επιμέλεια κώδικα: Dimitrios Kanatas
 - Οπτικοποίηση δεδομένων: <https://synapse-network-steth.vercel.app/>
 
 ## Περιεχόμενο repository
