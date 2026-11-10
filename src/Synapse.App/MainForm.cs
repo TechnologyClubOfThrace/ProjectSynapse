@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Synapse.Audio;
 using Synapse.Input;
 
@@ -15,6 +16,8 @@ internal sealed class MainForm : Form
     private static readonly Color Error = Color.FromArgb(228, 109, 94);
     private static readonly Color CardBorder = Color.FromArgb(48, 72, 59);
     private static readonly Color ControlBackground = Color.FromArgb(24, 42, 33);
+    private const string DataVisualizationUrl = "https://synapse-network-steth.vercel.app/";
+    private const string RepositoryUrl = "https://github.com/TechnologyClubOfThrace/ProjectSynapse";
     private static readonly string[] MusicalStageNames =
         ["Ρίζες", "Κορμός", "Κλαδιά", "Φύλλωμα", "Πλήρης ζωή"];
 
@@ -30,6 +33,7 @@ internal sealed class MainForm : Form
     private readonly System.Windows.Forms.Timer uiTimer = new() { Interval = 50 };
     private readonly SemaphoreSlim commandGate = new(1, 1);
     private readonly Queue<string> logLines = new();
+    private readonly Image headerLogo = LoadEmbeddedImage("Synapse.App.Assets.SynapseLogoGr.png");
 
     private ToolStripButton resetButton = null!;
     private ToolStripButton fullScreenButton = null!;
@@ -151,14 +155,18 @@ internal sealed class MainForm : Form
             Dock = DockStyle.Top,
             GripStyle = ToolStripGripStyle.Hidden,
             Padding = new Padding(12, 6, 12, 6),
+            ImageScalingSize = new Size(138, 44),
             BackColor = CardBackground,
             Renderer = new AtmosphericToolStripRenderer(),
             ForeColor = PrimaryText
         };
-        var title = new ToolStripLabel("SYNAPSE")
+        var title = new ToolStripLabel
         {
-            Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold),
-            ForeColor = PrimaryText,
+            Image = headerLogo,
+            ImageScaling = ToolStripItemImageScaling.SizeToFit,
+            AutoSize = false,
+            Size = new Size(138, 44),
+            ToolTipText = "Synapse — Σύλλογος Τεχνολογίας Θράκης",
             Margin = new Padding(0, 0, 18, 0)
         };
         var subtitle = new ToolStripLabel("Η ζωή του δέντρου μέσα από την αφή και τον ήχο")
@@ -175,6 +183,14 @@ internal sealed class MainForm : Form
             ForeColor = PrimaryText
         };
         fullScreenButton.Click += (_, _) => ToggleFullScreen();
+        var dataVisualizationButton = new ToolStripButton("Οπτικοποίηση δεδομένων ↗")
+        {
+            Alignment = ToolStripItemAlignment.Right,
+            ForeColor = PrimaryText,
+            ToolTipText = DataVisualizationUrl
+        };
+        dataVisualizationButton.Click += (_, _) =>
+            OpenExternalLink(DataVisualizationUrl, "την οπτικοποίηση δεδομένων");
         technicalPanelButton = new ToolStripButton("Προβολή εγκατάστασης")
         {
             Alignment = ToolStripItemAlignment.Right,
@@ -192,6 +208,7 @@ internal sealed class MainForm : Form
         toolStrip.Items.Add(title);
         toolStrip.Items.Add(subtitle);
         toolStrip.Items.Add(fullScreenButton);
+        toolStrip.Items.Add(dataVisualizationButton);
         toolStrip.Items.Add(technicalPanelButton);
         toolStrip.Items.Add(muteButton);
         toolStrip.Items.Add(resetButton);
@@ -209,7 +226,17 @@ internal sealed class MainForm : Form
             TextAlign = ContentAlignment.MiddleLeft
         };
         statusStrip.Items.Add(footerStatus);
-        statusStrip.Items.Add(new ToolStripStatusLabel("Synapse v2 • Τοπική λειτουργία"));
+        statusStrip.Items.Add(new ToolStripStatusLabel("Synapse v2 • Dimitrios Kanatas"));
+        var repositoryLink = new ToolStripStatusLabel("GitHub ↗")
+        {
+            IsLink = true,
+            LinkColor = SecondaryText,
+            ActiveLinkColor = Accent,
+            VisitedLinkColor = SecondaryText,
+            ToolTipText = RepositoryUrl
+        };
+        repositoryLink.Click += (_, _) => OpenExternalLink(RepositoryUrl, "το GitHub repository");
+        statusStrip.Items.Add(repositoryLink);
         Controls.Add(statusStrip);
 
         workspacePanel = new TableLayoutPanel
@@ -255,6 +282,35 @@ internal sealed class MainForm : Form
         technicalPanel.Controls.Add(CreateSimulatorCard(), 0, 1);
         technicalPanel.Controls.Add(CreateLogCard(), 0, 2);
         ApplyTechnicalTheme(technicalPanel);
+    }
+
+    private static Image LoadEmbeddedImage(string resourceName)
+    {
+        using var stream = typeof(MainForm).Assembly.GetManifestResourceStream(resourceName)
+            ?? throw new InvalidOperationException($"Embedded image resource not found: {resourceName}");
+        using var source = Image.FromStream(stream);
+        return new Bitmap(source);
+    }
+
+    private void OpenExternalLink(string url, string description)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(url)
+            {
+                UseShellExecute = true
+            });
+        }
+        catch (Exception exception)
+        {
+            AddLog($"WARNING: Could not open external link: {exception.Message}");
+            MessageBox.Show(
+                this,
+                $"Δεν ήταν δυνατό να ανοίξει {description}.\n\n{url}",
+                "Synapse",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning);
+        }
     }
 
     private Control CreateSessionCard()
@@ -562,9 +618,12 @@ internal sealed class MainForm : Form
         card.Controls.Add(telemetryStatus);
         card.Resize += (_, _) =>
         {
-            calibrationButton.Left = Math.Max(318, card.ClientSize.Width - calibrationButton.Width - 22);
-            serialButton.Left = Math.Max(208, calibrationButton.Left - serialButton.Width - 10);
-            portCombo.Width = Math.Max(120, serialButton.Left - portCombo.Left - 10);
+            var compact = card.ClientSize.Width < 430;
+            calibrationButton.Width = compact ? 105 : 122;
+            serialButton.Width = compact ? 90 : 100;
+            calibrationButton.Left = card.ClientSize.Width - calibrationButton.Width - 22;
+            serialButton.Left = calibrationButton.Left - serialButton.Width - 10;
+            portCombo.Width = Math.Max(80, serialButton.Left - portCombo.Left - 10);
             levelTrack.Width = Math.Max(160, card.ClientSize.Width - 40);
             telemetryStatus.Left = telemetryButton.Right + 10;
             telemetryStatus.Width = Math.Max(80, card.ClientSize.Width - telemetryStatus.Left - 22);
@@ -1606,7 +1665,7 @@ internal sealed class MainForm : Form
     private void PopulatePreviewState()
     {
         SetTechnicalPanelVisibility(options.TechnicalPreview);
-        compositionCombo.Items.Add("Tree Installation 1");
+        compositionCombo.Items.Add("Η Ζωή του Δέντρου (Σύνθεση: Giannis Gogos)");
         compositionCombo.SelectedIndex = 0;
         compositionCombo.Enabled = true;
         SetStatus(sampleStatus, "Samples", "5 έγκυρα layers", Success);
@@ -1635,7 +1694,7 @@ internal sealed class MainForm : Form
             "Συνάψεις: 6  •  Περισσότερα μαζί: 4";
         synapseTimingLabel.Text =
             "Τρέχουσα σύναψη: 01:12  •  Συνολική επαφή: 00:08:46  •  Μεγαλύτερη σύναψη: 02:05";
-        AddLog("Audio assets verified: tree instalation1");
+        AddLog("Audio assets verified: Η Ζωή του Δέντρου");
         AddLog("Audio engine ready. No audio has played yet.");
         AddLog("Simulator participation: 7; layers: 5");
         footerStatus.Text = "Έτοιμο • Λειτουργία προσομοίωσης";
@@ -1679,6 +1738,7 @@ internal sealed class MainForm : Form
         }
         serialClient.Dispose();
         audioEngine.Dispose();
+        headerLogo.Dispose();
     }
 
     private sealed record DeviceItem(AudioDeviceInfo Info)
