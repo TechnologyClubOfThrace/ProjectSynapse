@@ -1,0 +1,48 @@
+name: Windows CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    name: Build and test
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+          cache-dependency-path: '**/packages.lock.json'
+
+      - name: Restore locked dependencies
+        run: dotnet restore tests/Synapse.Audio.Tests/Synapse.Audio.Tests.csproj --runtime win-x64 --locked-mode
+
+      - name: Build Release configuration
+        run: dotnet build tests/Synapse.Audio.Tests/Synapse.Audio.Tests.csproj --configuration Release --runtime win-x64 --no-restore
+
+      - name: Run automated tests
+        run: dotnet run --project tests/Synapse.Audio.Tests/Synapse.Audio.Tests.csproj --configuration Release --runtime win-x64 --no-build
+
+      - name: Verify source formatting
+        run: dotnet format src/Synapse.App/Synapse.App.csproj whitespace --no-restore --verify-no-changes

@@ -4,6 +4,12 @@
   <img src="src/Synapse.App/Assets/synapse-logo-gr.png" alt="Synapse - Σύλλογος Τεχνολογίας Θράκης" width="520">
 </p>
 
+<p align="center">
+  <a href="https://github.com/TechnologyClubOfThrace/ProjectSynapse/actions/workflows/windows-ci.yml">
+    <img src="https://github.com/TechnologyClubOfThrace/ProjectSynapse/actions/workflows/windows-ci.yml/badge.svg" alt="Windows CI">
+  </a>
+</p>
+
 Το Synapse είναι μια διαδραστική εγκατάσταση συλλογικής αφής, φωτισμού και
 μουσικής. Μια κοινή επιφάνεια αφής συνδέεται με ESP32-S3. Το firmware μετρά τη
 χωρητική μεταβολή και οδηγεί τον φωτισμό του δέντρου, ενώ η εφαρμογή Windows
@@ -12,6 +18,30 @@
 Το έργο αναπτύσσεται από τον Σύλλογο Τεχνολογίας Θράκης.
 
 - Οπτικοποίηση δεδομένων: <https://synapse-network-steth.vercel.app/>
+
+## Εφαρμογή Windows
+
+![Η εφαρμογή Synapse σε λειτουργία παρουσίασης](docs/assets/synapse-windows-app.png)
+
+Το screenshot χρησιμοποιεί το ενσωματωμένο περιβάλλον προσομοίωσης και δεν
+περιέχει δεδομένα πραγματικής εκδήλωσης.
+
+## Αρχιτεκτονική
+
+```mermaid
+flowchart LR
+    Touch["Επιφάνεια αφής"] --> ESP["ESP32-S3"]
+    ESP -->|"USB Serial"| App["Εφαρμογή Windows"]
+    ESP --> LEDs["RGBWC LEDs δέντρου"]
+    App --> Mixer["Mixer 5 μουσικών layers"]
+    Mixer --> Audio["Συσκευή ήχου / ηχεία"]
+    App --> Data["Τοπικά JSONL και SQLite"]
+    Data -. "Χειροκίνητη εισαγωγή" .-> Web["Web οπτικοποίηση"]
+```
+
+Ο φωτισμός και η βασική λειτουργία ήχου δεν απαιτούν σύνδεση στο Internet.
+Τα δεδομένα παραμένουν τοπικά και μεταφέρονται στην οπτικοποίηση μόνο με
+ενέργεια του χειριστή.
 
 ## Περιεχόμενο repository
 
